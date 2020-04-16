@@ -3,7 +3,6 @@ import os
 
 def conlleval(label_predict, label_path, metric_path):
     """
-
     :param label_predict:
     :param label_path:
     :param metric_path:
