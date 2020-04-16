@@ -39,8 +39,8 @@ For generating vocabulary file, please refer to the code in `data.py`.
 Each data file should be in the following format:
 
 ```
-奔	B-LOC
-驰	I-LOC
+奔	B-CAR
+驰	I-CAR
 很	O
 不 O
 错	O
@@ -89,7 +89,7 @@ You can input one auto-related sentence and the model will return the recognitio
 
 
 ## Reference
-[https://github.com/Determined22/zh-NER-TF]
+https://github.com/Determined22/zh-NER-TF
 
 \[1\] [Bidirectional LSTM-CRF Models for Sequence Tagging](https://arxiv.org/pdf/1508.01991v1.pdf)
 
