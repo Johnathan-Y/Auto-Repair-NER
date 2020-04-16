@@ -1,8 +1,8 @@
 # A BiLSTM-CRF model for Auto-Repair-Domain Named Entity Recognition
 
-This repository includes the code for buliding a very simple __character-based BiLSTM-CRF sequence labeling model__ for Auto-Repair Named Entity Recognition task. Its goal is to recognize three types of Named Entity: CAR, CPT and BRD. 
+This repository includes the code for buliding a very simple __character-based BiLSTM-CRF sequence labeling model__ for Auto-Repair Domain Named Entity Recognition task. Its goal is to recognize three types of Named Entity: CAR, CPT and BRD. They refer to the car brand, car-component name, car-breakdown code.
 
-This code works on __Python 3 & TensorFlow 1.2__ and the following repository [https://github.com/guillaumegenthial/sequence_tagging](https://github.com/guillaumegenthial/sequence_tagging) gives me much help.
+This code works on __Python 3 & TensorFlow 1.2__ .
 
 ## Model
 
@@ -18,10 +18,13 @@ The third layer, __CRF layer__,  labels the tag for each character in one senten
 
 ## Dataset
 
-|    | #sentence | #PER | #LOC | #ORG |
+
+My original corpus comes from more than 20,000 articles in the automotive field, containing more than 210,000 sentences and a total of 12 million characters.
+
+|    | #sentence | #CAR | #CPT | #BRD |
 | :----: | :---: | :---: | :---: | :---: |
-| train  | 46364 | 17615 | 36517 | 20571 |
-| test   | 4365  | 1973  | 2877  | 1331  |
+| train  | 146354 | 127954 | 112549 | 29571 |
+| test   | 68620  | 54413  | 66406  | 11137  |
 
 
 
@@ -42,7 +45,7 @@ Each data file should be in the following format:
 奔	B-CAR
 驰	I-CAR
 很	O
-不 O
+不	O
 错	O
 
 句	O
@@ -60,7 +63,7 @@ If you want to use your own dataset, please:
 - transform your corpus to the above format
 - generate a new vocabulary file
 
-## How to Run
+## Quick to start
 
 ### train
 
@@ -76,9 +79,9 @@ An official evaluation tool for computing metrics: [here (click 'Instructions')]
 
 My test performance:
 
-| P     | R     | F     | F (PER)| F (LOC)| F (ORG)|
+| P     | R     | F     | F (CAR)| F (CPT)| F (BRD)|
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| 0.8945 | 0.8752 | 0.8847 | 0.8688 | 0.9118 | 0.8515
+| 0.9802 | 0.9716 | 0.9759 | 0.9737 | 0.9880 | 0.9150
 
 ### demo
 
@@ -87,9 +90,11 @@ My test performance:
 You can input one auto-related sentence and the model will return the recognition result:
 
 
-
 ## Reference
-https://github.com/Determined22/zh-NER-TF
+
+Thanks to these open source projects for their help
+
+\[0\][https://github.com/Determined22/zh-NER-TF](https://github.com/Determined22/zh-NER-TF)
 
 \[1\] [Bidirectional LSTM-CRF Models for Sequence Tagging](https://arxiv.org/pdf/1508.01991v1.pdf)
 
