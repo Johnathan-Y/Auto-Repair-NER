@@ -26,7 +26,12 @@ My original corpus comes from more than 20,000 articles in the automotive field,
 | train  | 146354 | 127954 | 112549 | 29571 |
 | test   | 68620  | 54413  | 66406  | 11137  |
 
+### corpus files
 
+Due to the privacy, the data in this folder is provided by the project company I serve. You can obtain the vocabulary and corpus data online.But I have provided a few samples.The directory `./corpus` contains:
+
+- the unprocessed original corpus file,`car_ner_corpus.xlsx`.
+- the word dicts for car,component and breakdown code.
 
 ### data files
 
@@ -44,9 +49,13 @@ Each data file should be in the following format:
 ```
 奔	B-CAR
 驰	I-CAR
+发	B-CPT
+动	I-CPT
+机	I-CPT
 很	O
 不	O
 错	O
+！	O
 
 句	O
 子	O
@@ -55,7 +64,7 @@ Each data file should be in the following format:
 是	O
 空	O
 行	O
-
+。	O
 ```
 
 If you want to use your own dataset, please: 
