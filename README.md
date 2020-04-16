@@ -82,15 +82,15 @@ If you want to use your own dataset, please:
 
 `python main.py --mode=test --demo_model=1586944910`
 
-`1586944910` is the model trained by me. 
+`1586944910` is my trained model for your guys. 
 
-An official evaluation tool for computing metrics: [here (click 'Instructions')](http://sighan.cs.uchicago.edu/bakeoff2006/)
+Metric Performance:
 
-My test performance:
+| P     | R     | F     | 
+| :---: | :---: | :---: |
+| 0.9802 | 0.9716 | 0.9759 |
 
-| P     | R     | F     | F (CAR)| F (CPT)| F (BRD)|
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| 0.9802 | 0.9716 | 0.9759 | 0.9737 | 0.9880 | 0.9150
+An official evaluation tool for computing metrics: [click here](http://sighan.cs.uchicago.edu/bakeoff2006/)
 
 ### demo
 
