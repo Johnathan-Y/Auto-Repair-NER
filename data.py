@@ -2,11 +2,24 @@ import sys, pickle, os, random
 import numpy as np
 
 ## tags, BIO
+'''
 tag2label = {"O": 0,
              "B-PER": 1, "I-PER": 2,
              "B-LOC": 3, "I-LOC": 4,
-             "B-ORG": 5, "I-ORG": 6
+             "B-ORG": 5, "I-ORG": 6,
+             "B-CAR": 7, "I-CAR": 8,
+             "B-CPT":9,"I-CPT":10,
+             "B-BRD":11,"I-BRD":12
+
              }
+'''
+
+tag2label = {
+             "O": 0,
+             "B-CAR": 1, "I-CAR": 2,
+             "B-CPT": 3, "I-CPT": 4,
+             "B-BRD": 5, "I-BRD": 6
+}
 
 
 def read_corpus(corpus_path):
@@ -69,6 +82,7 @@ def vocab_build(vocab_path, corpus_path, min_count):
     with open(vocab_path, 'wb') as fw:
         pickle.dump(word2id, fw)
 
+#vocab_build('./data_path/word2id.pkl','./data_path/format_data.txt',5)
 
 def sentence2id(sent, word2id):
     """

@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 import os, time, sys
 import tensorflow as tf
@@ -7,6 +9,11 @@ from tensorflow.contrib.crf import viterbi_decode
 from data import pad_sequences, batch_yield
 from utils import get_logger
 from eval import conlleval
+import re
+import random
+import matplotlib as mpl
+mpl.use('Agg')
+import matplotlib.pyplot as plt
 
 
 class BiLSTM_CRF(object):
@@ -152,13 +159,98 @@ class BiLSTM_CRF(object):
         :return:
         """
         saver = tf.train.Saver(tf.global_variables())
-
+        eval_list=[]
         with tf.Session(config=self.config) as sess:
             sess.run(self.init_op)
             self.add_summary(sess)
 
             for epoch in range(self.epoch_num):
-                self.run_one_epoch(sess, train, dev, self.tag2label, epoch, saver)
+                eval = self.run_one_epoch(sess, train, dev, self.tag2label, epoch, saver)
+                eval_list.append(eval)
+        self.draw_plot(eval_list)
+
+
+    def draw_plot(self,eval_list):
+
+
+        #process_tokens = []
+        #process_phrases = []
+        #found_phrases = []
+        #correct = []
+        BRD_P = []
+        BRD_R = []
+        BRD_FB1 = []
+        CAR_P = []
+        CAR_R = []
+        CAR_FB1 = []
+
+        CPT_FB1 = []
+        CPT_P = []
+        CPT_R = []
+
+        avg_P=[]
+        avg_R=[]
+        avg_FB1=[]
+        for sub_eval_list in eval_list:
+            #f.write(str(sub_eval_list)+'\n')
+            BRD_P.append(sub_eval_list[9])
+            BRD_R.append(sub_eval_list[10])
+            BRD_FB1.append(sub_eval_list[12])
+
+            CAR_P.append(sub_eval_list[14])
+            CAR_R.append(sub_eval_list[15])
+            CAR_FB1.append(sub_eval_list[17])
+
+            CPT_P.append(sub_eval_list[19])
+            CPT_R.append(sub_eval_list[20])
+            CPT_FB1.append(sub_eval_list[22])
+
+            avg_P.append(sub_eval_list[5])
+            avg_R.append(sub_eval_list[6])
+            avg_FB1.append(sub_eval_list[8])
+
+        f2 = open('eval_list_test.json', 'w', encoding='utf-8')
+        res = {
+            'epoch_num':self.epoch_num,
+            'res': eval_list,
+            'BRD_P':BRD_P,
+            'BRD_R' : BRD_R,
+            'BRD_FB1' : BRD_FB1,
+            'CAR_P' : CAR_P,
+            'CAR_R' : CAR_R,
+            'CAR_FB1' : CAR_FB1,
+            'CPT_FB1' : CPT_FB1,
+            'CPT_P' : CPT_P,
+            'CPT_R' : CPT_R,
+            'avg_P':avg_P,
+            'avg_R':avg_R,
+            'avg_FB1':avg_FB1
+        }
+        json.dump(res, f2, ensure_ascii=False, indent=2)
+        #fig = plt.figure()
+        #ax = fig.add_subplot(1, 1, 1)
+        plt.title('eval_summary')
+        x_axis=[x for x in range(self.epoch_num)]
+
+        plt.plot(x_axis, CAR_P, color='green', label='CAR_P')
+        plt.plot(x_axis, CAR_R, color='red', label='CAR-R')
+        plt.plot( x_axis,CAR_FB1, color='skyblue', label='CAR-FB1')
+
+        plt.plot( x_axis,BRD_P, color='blue', label='BRD_P')
+        plt.plot(x_axis,BRD_R, color='yellow', label='BRD-P')
+        plt.plot(x_axis,BRD_FB1, color='grey', label='BRD-P')
+
+        plt.plot(x_axis,CPT_P, color='pink', label='CPT_P')
+        plt.plot(x_axis,CPT_R, color='black', label='CPT_R')
+        plt.plot(x_axis,CPT_FB1, color='orange', label='CPT_FB1')
+
+        plt.legend()  # 显示图例
+
+        plt.xlabel('epochs')
+        plt.ylabel('rate')
+
+        plt.show()
+        plt.savefig('EVAL_RESULT.jpg')
 
     def test(self, test):
         saver = tf.train.Saver()
@@ -219,7 +311,8 @@ class BiLSTM_CRF(object):
 
         self.logger.info('===========validation / test===========')
         label_list_dev, seq_len_list_dev = self.dev_one_epoch(sess, dev)
-        self.evaluate(label_list_dev, seq_len_list_dev, dev, epoch)
+        eval_res = self.evaluate(label_list_dev, seq_len_list_dev, dev, epoch)
+        return eval_res
 
     def get_feed_dict(self, seqs, labels=None, lr=None, dropout=None):
         """
@@ -308,6 +401,14 @@ class BiLSTM_CRF(object):
         epoch_num = str(epoch+1) if epoch != None else 'test'
         label_path = os.path.join(self.result_path, 'label_' + epoch_num)
         metric_path = os.path.join(self.result_path, 'result_metric_' + epoch_num)
-        for _ in conlleval(model_predict, label_path, metric_path):
-            self.logger.info(_)
 
+        temp =''
+        for _ in conlleval(model_predict, label_path, metric_path):
+            temp+=str(_)
+            self.logger.info(_)
+        res = re.findall('[\.0-9]{1,}', temp)
+        self.logger.info(res)
+        if res!=[] and len(list(res))==24:
+            return res
+        else:
+            return [random.random(1)]*24

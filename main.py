@@ -11,14 +11,14 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # default: 0
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
-config.gpu_options.per_process_gpu_memory_fraction = 0.2  # need ~700MB GPU memory
+config.gpu_options.per_process_gpu_memory_fraction = 0.9  # need ~700MB GPU memory
 
 
 ## hyperparameters
 parser = argparse.ArgumentParser(description='BiLSTM-CRF for Chinese NER task')
 parser.add_argument('--train_data', type=str, default='data_path', help='train data source')
 parser.add_argument('--test_data', type=str, default='data_path', help='test data source')
-parser.add_argument('--batch_size', type=int, default=64, help='#sample of each minibatch')
+parser.add_argument('--batch_size', type=int, default=32, help='#sample of each minibatch')
 parser.add_argument('--epoch', type=int, default=40, help='#epoch of training')
 parser.add_argument('--hidden_dim', type=int, default=300, help='#dim of hidden state')
 parser.add_argument('--optimizer', type=str, default='Adam', help='Adam/Adadelta/Adagrad/RMSProp/Momentum/SGD')
@@ -54,6 +54,7 @@ if args.mode != 'demo':
 
 ## paths setting
 paths = {}
+#训练模式使用当前时间戳生成新的模型文件，demo模式用户指定
 timestamp = str(int(time.time())) if args.mode == 'train' else args.demo_model
 output_path = os.path.join('.', args.train_data+"_save", timestamp)
 if not os.path.exists(output_path): os.makedirs(output_path)
@@ -118,5 +119,5 @@ elif args.mode == 'demo':
                 demo_sent = list(demo_sent.strip())
                 demo_data = [(demo_sent, ['O'] * len(demo_sent))]
                 tag = model.demo_one(sess, demo_data)
-                PER, LOC, ORG = get_entity(tag, demo_sent)
-                print('PER: {}\nLOC: {}\nORG: {}'.format(PER, LOC, ORG))
+                CAR, CPT, BRD = get_entity(tag, demo_sent)
+                print('CPT: {}\nCAR: {}\nBRD: {}'.format(CPT, CAR, BRD))
